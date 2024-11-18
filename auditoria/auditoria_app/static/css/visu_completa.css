@@ -1,0 +1,82 @@
+/* Variáveis de cores para o tema claro */
+:root {
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --form-background-color: #fff;
+    --input-background-color: transparent;
+    --input-text-color: white;
+    --input-border-color: #372df6;
+    --button-background-color: #2656be;
+    --table-header-background-color: #2656be;
+    --table-row-background-color: #f9f9f9;
+    --table-background-color: white;
+    --box-shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #181818;
+        --text-color: #f0f0f0;
+        --form-background-color: #333;
+        --input-background-color: #444;
+        --input-text-color: #f0f0f0;
+        --input-border-color: #372df6;
+        --button-background-color: #2656be;
+        --table-header-background-color: #2656be;
+        --table-row-background-color: #222;
+        --table-background-color: #333;
+        --box-shadow-color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+.sidebar {
+    width: 60px;
+    height: 100vh;
+    background-color:var(--fundo);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    z-index: 9;
+  }
+  
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+h2 {
+    text-align: center;
+    color: var(--text-color);
+}
+
+table {
+    background-color: var(--table-background-color);
+    box-shadow: 0 0 10px var(--box-shadow-color);
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: var(--table-header-background-color);
+    color: white;
+}
+
+thead th {
+    color: white;
+}
+
+tbody td {
+    color: var(--text-color);
+    background-color: var(--table-background-color);
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--table-row-background-color);
+}

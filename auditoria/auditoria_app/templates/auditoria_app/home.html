@@ -1,0 +1,216 @@
+{% extends 'auditoria_app/base_princ.html' %}
+{% load static %}
+
+{% block content %}
+
+<head>
+  <title>Norte-Inicio</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+  <script src="{% static 'scripts/login_cads.js' %}"></script>
+</head>
+<div class="campo">
+
+  <h1>Clientes ( {{ clientes|length }} )</h1>
+  <div class="grup-pesq-container">
+    <div class="grup_pesq">
+      <form id="form-busca" action="{% url 'auditoria_app:contra' valida=0 argumento='placeholder' %}" method="GET"
+        style="background-color: transparent;">
+        <label for="Contra-senha">Contra senha:</label>
+        <input type="text" id="Contra-senha" name="Contra-senha" placeholder="Digite CPF ou CNPJ"
+          onkeydown="enviarSeEnter(event)">
+      </form>
+    </div>
+    <div class="grup_pesq_2">
+      <div class="grup_pesq">
+        <label for="">Cpf/Cnpj</label>
+        <select name="PJ" id="PJ" class="sele" onchange="location = this.value;">
+          {% for cliente in clientes %}
+          <option value="{% url 'auditoria_app:home_filter' valida=0 filtro=cliente.cpf_cnpj %}">{{ cliente.cpf_cnpj }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="grup_pesq">
+        <label for="">Empresa :</label>
+        <select name="empresa" id="empresa" class="sele" onchange="location = this.value;">
+          {% for cliente in clientes %}
+          <option value="{% url 'auditoria_app:home_filter' valida=0 filtro=cliente.Empresa %}">{{ cliente.Empresa }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>CPF/CNPJ</th>
+        <th>NOME</th>
+        <th>EMPRESA</th>
+        <th>SOBRE</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+      <tr>
+        <td data-label="Documento">{{ cliente.cpf_cnpj }}</td>
+        <td data-label="Nome">{{ cliente.Nome }}</td>
+        <td data-label="Empresa">{{ cliente.Empresa }}</td>
+        <td data-label="">
+          <div class="grupo-usu">
+            <a href="{% url 'auditoria_app:info_usu' valida=0 pj=cliente.cpf_cnpj %}">Informações</a>
+            <a href="{% url 'auditoria_app:auditoria' valida=0 empresa=cliente.Empresa %}">Auditoria</a>
+            <a href="{% url 'auditoria_app:contra' valida=0 argumento=cliente.cpf_cnpj %}">Contra senha</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="12">Nenhum cliente encontrado...</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if validacao == 2 %}
+  <div id="welcomeModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 class="modal-title">Informações de Senha</h2>
+      <div class="senha-info">
+        <div class="senha-item">
+          <label>Senha Atual:</label>
+          <span>{{ contra.SenhaAtual }}</span>
+        </div>
+        <div class="senha-item">
+          <label>Senha Anterior:</label>
+          <span>{{ contra.SenhaMesAnterior }}</span>
+        </div>
+        <div class="senha-item">
+          <label>Senha Provisória:</label>
+          <span>{{ contra.SenhaProvisoria }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+
+  {% if validacao == 1 %}
+  <div id="welcomeModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="info">
+        <div class="informacoes-pessoais">
+          <h3>Informações Pessoais</h3>
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" value="{{ exibi_filter.Nome }}">
+
+          <label for="apelido">Apelido:</label>
+          <input type="text" id="apelido" value="{{ exibi_filter.Apelido }}">
+
+          <div class="campo-endereco-linha">
+            <div class="input-grupo">
+              <label for="cpf">CPF/CNPJ:</label>
+              <input type="text" id="cpf" value="{{ exibi_filter.cpf_cnpj }}">
+            </div>
+            <div class="input-grupo">
+              <label for="telefone">Telefone:</label>
+              <input type="text" id="telefone" value="{{ exibi_filter.NumeroTelefone }}">
+            </div>
+          </div>
+
+
+          <label for="data-cadastro">Data de Cadastro:</label>
+          <input type="text" id="data-cadastro" value="{{ exibi_filter.DataCadastro }}">
+        </div>
+
+        <div class="campo-endereco">
+          <h3>Endereço</h3>
+          <label class="menor" for="endereco">Rua:</label>
+          <input class="menor" type="text" id="endereco" value="{{ exibi_filter.Rua }}">
+
+          <div class="campo-endereco-linha">
+            <div class="input-grupo">
+              <label for="bairro">Bairro:</label>
+              <input type="text" id="bairro" value="{{ exibi_filter.Bairro }}">
+            </div>
+
+            <div class="input-grupo">
+              <label class="menor" for="numero">Número:</label>
+              <input class="menor" type="text" id="numero" value="{{ exibi_filter.Numero }}">
+            </div>
+          </div>
+
+          <div class="campo-endereco-linha">
+            <div class="input-grupo">
+              <label for="cidade">Cidade:</label>
+              <select id="cidade">
+                <option value="{{ exibi_filter.Cidade }}" selected>{{ exibi_filter.Cidade }}</option>
+              </select>
+            </div>
+
+            <div class="input-grupo">
+              <label for="estado">UF:</label>
+              <select id="estado">
+                <option value="{{ exibi_filter.UF }}" selected>{{ exibi_filter.UF }}</option>
+              </select>
+            </div>
+            <div class="input-grupo">
+              <label for="cep">CEP:</label>
+              <input type="text" id="cep" value="{{ exibi_filter.CEP }}">
+            </div>
+          </div>
+          <button>Mais Endereço</button>
+        </div>
+
+        <div class="campo-futuro">
+          <h3>Campo Futuro</h3>
+          <p>Espaço reservado para informações adicionais no futuro.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+<div id="cala" style="display: none;">
+  <div id="welcomeModal_pj" class="modal">
+    <div class="modal-content">
+      <b style="color:black;font-size: 20px;">Por favor, insira um CPF ou CNPJ válido.</b>
+    </div>
+  </div>
+</div>
+<script>
+  function enviarSeEnter(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const valor = event.target.value.replace(/\D/g, '');
+      if (valor.length === 11 || valor.length === 14) {
+        const url = `{% url 'auditoria_app:contra' valida=0 argumento='placeholder' %}`.replace('placeholder', valor);
+        window.location.href = url;
+      } else {
+        document.getElementById('cala').style.display = 'block'; 
+        document.getElementById('welcomeModal_pj').style.display = 'flex'; 
+      }
+    }
+  }document.addEventListener('DOMContentLoaded', function() {
+    var modal_pj = document.getElementById('welcomeModal_pj');
+    var modal = document.getElementById('welcomeModal');
+    var span = document.getElementsByClassName('close')[0];
+    modal.style.display = 'block';
+    modal_pj.style.display = 'block';
+    span.onclick = function() {
+      modal.style.display = 'none'; 
+    }
+    window.onclick = function(event) {
+        if (event.target == modal || event.target == modal_pj) {
+            modal.style.display = 'none';
+            modal_pj.style.display = 'none';
+        }
+    }
+});
+</script>
+{% endblock %}

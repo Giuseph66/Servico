@@ -1,0 +1,37 @@
+{% extends 'auditoria_app/base_log.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login_cads.css' %}">
+
+<div class="form-signin text-center">
+    <form action="{% url 'auditoria_app:prontu' %}" method="post">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 fw-normal">Cadastro</h1>
+
+        <div class="form-floating">
+            <input type="nome" name="nome" class="form-control" id="floatingNome" placeholder="Nome (Preferencia do Git)" required>
+
+            <input type="email" name="username" class="form-control" id="floatingEmail" placeholder="Email " required>
+
+            <input type="tel" name="tel" class="form-control" id="floatingTel" placeholder="N° Celular" required>
+
+            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Senha"
+                required>
+        </div>
+
+        <div class="button-group">
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Cadastrar</button>
+        </div>
+        <p class="mt-5 mb-3 text-muted" style="color: #6a6a6ad4;">&copy; 2024</p>
+    </form>
+</div>
+{% if validacao > 0 %}
+<div id="welcomeModal" class="modal" style="display:block;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>{{ sms }}</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

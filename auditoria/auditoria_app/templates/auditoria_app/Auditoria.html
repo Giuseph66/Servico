@@ -1,0 +1,246 @@
+{% extends 'auditoria_app/base_princ.html' %} {% load static %} {% block content %}
+
+<head>
+    <title>Norte-Auditoria</title>
+    <link rel="stylesheet" href="{% static 'css/gerencial.css' %}">
+    <script src="{% static 'scripts/login_cads.js' %}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<div class="campo">
+    <h1>Filtros de Auditoria</h1>
+    <form action="{% url 'auditoria_app:auditoria' valida=0 empresa='sera_calma157' %}" method="GET">
+        {% csrf_token %}
+        <div class="date">
+            <div class="date-item" style="background-color: aqua;">
+                <label for="data_inicio">Data Início:</label>
+                <input type="date" id="data_inicio" name="data_inicio"
+                    value="{{ request.GET.data_inicio|default:default_data_inicio }}">
+            </div>
+
+            <div class="date-item"style="background-color: aqua;">
+                <label for="data_fim">Data Fim:</label>
+                <input type="date" id="data_fim" name="data_fim"
+                    value="{{ request.GET.data_fim|default:default_data_fim }}">
+            </div>
+
+            <div class="date-item"style="background-color: aqua;">
+                <label for="executavel">Executável:</label>
+                <select name="executavel" id="executavel" class="sele">
+                    <option value="">-- Selecione um executável --</option>
+                    {% for executavel in executaveis %}
+                    <option value="{{ executavel }}" {% if executavel == executavel_selecionado %}selected{% endif %}>
+                        {{ executavel }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <br>
+            </div>
+
+            <div class="date-item"style="background-color: aqua;">
+                <label for="tabela">Tabela:</label>
+                <select name="tabela" id="tabela" class="sele">
+                    <option value="">-- Selecione uma tabela --</option>
+                    {% for tabela in tabelas %}
+                    <option value="{{ tabela }}" {% if tabela == tabela_selecionada %}selected{% endif %}>
+                        {{ tabela }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <br>
+            </div>
+            <div class="date-item" style="display: flex; flex-direction: column; width: 1000px; padding: 10px; border-radius: 5px; gap: 10px; background-color: aqua;">
+                <label style="font-weight: bold; font-size: 18px; white-space: nowrap;">Pesquisa Genérica (LOG)</label>
+                
+                <div style="display: flex; justify-content: space-between; gap: 20px;">
+                    <div style="flex: 1;">
+                        <label for="campo" style="display: block; margin-bottom: 5px;">Campo:</label>
+                        <select name="campo" id="campo" class="sele" style="width: 100%; padding: 5px;">
+                            <option value="">-- Base --</option>
+                            {% for campo in campos %}
+                                <option value="{{ campo }}" {% if campo == campo_selecionada %}selected{% endif %}>
+                                    {{ campo }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            
+                    <div style="flex: 1;">
+                        <label for="busca" style="display: block; margin-bottom: 5px;">Pesquisa:</label>
+                        <input type="text" id="busca" name="busca" placeholder="Pesquisa alterações" style="width: 200px; padding: 5px;" value="{{ busca_dados }}">
+                    </div>
+                </div>
+            </div>            
+    </div>
+        <label id="graficoLabel">
+            <button type="button"
+                onclick="window.location.href='{% url 'auditoria_app:graf' valida=0 ini_dada=request.GET.data_inicio|default:default_data_inicio fim_data=request.GET.data_fim|default:default_data_fim %}'">
+                Gráfico
+            </button>
+        </label>
+
+        <button type="submit">Filtrar</button>
+    </form>
+
+    {% if validacao == 2 %}
+    <div id="welcomeModal" class="modal" style="display:block;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+
+            <div id="content" class="grafico-grid">
+                <div class="grafico-container">
+                    <h1>Gráficos de Empresa</h1>
+                    <div class="graf">
+                        {{ grafico1|safe }}
+                    </div>
+                </div>
+                <div class="grafico-container">
+                    <h1>Gráfico de Executavel</h1>
+                    <div class="graf">
+                        {{ grafico2|safe }}
+                    </div>
+                </div>
+                <div class="grafico-container">
+                    <h1>Gráfico de Tabela</h1>
+                    <div class="graf">
+                        {{ grafico3|safe }}
+                    </div>
+                </div>
+            </div>
+            <div class="grafico-grid grafico-grid-exclusivo">
+                <div class="grafico-container">
+                    <h1>Gráfico de Operação</h1>
+                    <div class="graf">
+                        {{ graf_linha|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="cab">
+        <h3>Resultados da Auditoria ({{ dados_auditoria|length }})</h3>
+        <a href="{% url 'auditoria_app:pre'%}" class="v_c">Visualização-Completa</a>
+        <div class="download-btn" id="downloadBtn" onclick="startDownload()">Baixar PDF</div>
+
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Empresa</th>
+                <th>Usuário</th>
+                <th>Operação</th>
+                <th>Máquina</th>
+                <th>Executável</th>
+                <th>Tabela</th>
+                <th>Log</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in dados_auditoria %}
+            <tr>
+                <td data-label="Data ">{{ item.data }}</td>
+                <td data-label="Hora ">{{ item.hora }}</td>
+                <td data-label="Empresa ">{{ item.razaoSocial }}</td>
+                <td data-label="Usuário ">{{ item.usuCodigo }}</td>
+                <td data-label="Operação ">{{ item.operacao }}</td>
+                <td data-label="Máquina ">{{ item.maquina }}</td>
+                <td data-label="Executável ">{{ item.executavel }}</td>
+                <td data-label="Tabela ">{{ item.tabela }}</td>
+                <td><a onclick="mostrarLog({{ forloop.counter0 }})">Abrir Log</a></td>
+                {% empty %}
+            <tr>
+                <td colspan="8">Nenhum dado encontrado...</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="welcomeModal_table" class="modal">
+        <div id="dentro" class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <table id="logTable">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Valor Antigo</th>
+                        <th>Novo Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        function startDownload() {
+            const btn = document.getElementById("downloadBtn");
+            btn.classList.add("loading");
+            const progressBar = document.createElement("div");
+            progressBar.classList.add("progress-bar");
+            btn.textContent = "";
+            btn.appendChild(progressBar);
+            const loadTime = {{ dados_auditoria| length}};
+        const downloadUrl = "{% url 'auditoria_app:download_pdf' ini_data=request.GET.data_inicio|default:default_data_inicio fim_data=request.GET.data_fim|default:default_data_fim %}";
+        window.location.href = downloadUrl;
+        for (let i = 0; i <= loadTime; i++) {
+            setTimeout(() => {
+                const percentComplete = Math.round((i / loadTime) * 100);
+                progressBar.style.width = percentComplete + "%";
+                progressBar.textContent = percentComplete + "%";
+                if (percentComplete === 100) {
+                    btn.classList.remove("loading");
+                    btn.textContent = "Carregamento Completo";
+                    progressBar.remove();
+                    setTimeout(() => {
+                        btn.textContent = "Baixar PDF";
+                    }, 10000);
+                }
+            }, i * 10);
+        }
+    }
+
+        const jsonData = {{ dados_auditoria| safe }};
+
+        function mostrarLog(index) {
+            const log = jsonData[index].log;
+            const logTableBody = document.getElementById('logTable').querySelector('tbody');
+            logTableBody.innerHTML = '';
+
+            if (log == "N/A") {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td colspan="3" style="text-align: center;">Log indisponível para este item.</td>
+            `;
+                logTableBody.appendChild(row);
+            } else {
+                const logData = JSON.parse(log);
+                logData.forEach(logItem => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${logItem.name}</td>
+                    <td>${logItem.old}</td>
+                    <td>${logItem.new}</td>
+                `;
+                    logTableBody.appendChild(row);
+                });
+            }
+            document.getElementById('welcomeModal_table').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('welcomeModal_table').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('welcomeModal_table');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</div>
+
+{% endblock %}

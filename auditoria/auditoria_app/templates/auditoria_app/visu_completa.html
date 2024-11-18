@@ -1,0 +1,16 @@
+{% extends 'auditoria_app/base_princ.html' %} {% load static %} {% block content %}
+
+<head>
+    <title>Norte-Auditoria</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/visu_completa.css' %}">
+</head>
+<div class="campo">
+    <div class="container mt-5" style="margin: 0;">
+        <h2 class="text-center">Visualização completa da tabela (Modo livre)</h2>
+        <div>{{ tabela_html|safe }}</div>
+        <div class="text-center mt-3">
+        </div>
+    </div>
+</div>
+{% endblock %}

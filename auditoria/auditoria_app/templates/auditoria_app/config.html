@@ -1,0 +1,41 @@
+{% extends 'auditoria_app/base_princ.html' %}
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>Norte-Configuração</title>
+    <link rel="stylesheet" href="{% static 'css/audi.css' %}">
+    <link rel="stylesheet" href="{% static 'css/configu.css' %}">
+    <script src="{% static 'scripts/login_cads.js' %}"></script>
+</head>
+<div class="campo">
+    <h1>Configurações</h1>
+    <div class="config_icon">
+        <form action="{% url 'auditoria_app:atu_img' valida=valida %}" method="post"
+            enctype="multipart/form-data">
+            {% csrf_token %}
+            <label style="width: 100%;">Alterar icon site:</label>
+            <input type="file" id="Arquivos" name="arquivos" required onchange="updateFileName()">
+            <label for="Arquivos" class="envia">Carregar imagem</label>
+            <span id="fileName">Nenhum arquivo selecionado</span>
+        
+            <button type="submit" class="submit-button">Atualizar</button>
+        </form>
+
+        <script>
+            function updateFileName() {
+                var input = document.getElementById('Arquivos');
+                var fileName = document.getElementById('fileName');
+                if (input.files.length > 0) {
+                    fileName.textContent = input.files[0].name;
+                } else {
+                    fileName.textContent = 'Nenhum arquivo selecionado';
+                }
+            }
+        </script>
+    </div>
+    
+</div>
+
+{% endblock %}

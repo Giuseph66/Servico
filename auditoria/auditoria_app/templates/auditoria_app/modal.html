@@ -1,0 +1,31 @@
+{% extends 'auditoria_app/Auditoria.html' %} {% load static %} {% block content_1 %}
+
+<script src="{% static 'scripts/login_cads.js' %}"></script>
+
+{% if validacao == 1 %}
+<div id="welcomeModal" class="modal" style="display:block;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campo</th>
+                    <th>Valor Antigo</th>
+                    <th>Novo Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in log %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.old }}</td>
+                    <td>{{ item.new }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

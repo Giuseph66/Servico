@@ -1,0 +1,70 @@
+.config_icon {
+    width: 200px;
+    float: right;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 30px;
+}
+
+.config_icon input {
+    display: none;
+}
+.config_icon label {
+    width:200px;
+    min-width: 200px;
+    display: block;
+    font-size: 16px;
+    margin-bottom: 10px; /* Adiciona um espaço abaixo do label */
+}
+.envia{
+    display: inline-block;
+    text-transform: uppercase;
+    color: aliceblue;
+    background-color: rgb(67, 43, 226);
+    text-align: center;
+    padding: 10px 5px;
+    box-shadow: 5px 15px 25px rgb(0,0,0,0.35);
+    border-radius:5px ;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+.config_icon span {
+    color: rgb(255, 255, 255);
+    text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.35); /* Aplicando sombra no texto */
+    margin-top: 10px;
+    font-size: 14px;
+}
+.submit-button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#Arquivos {
+    margin-bottom: 10px;
+    width: 100%; /* Para ajustar o input à largura completa do container */
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+    h1{
+        text-align: left;
+        font-size: 20px;
+        padding: auto 40px ;
+    }
+    .config_icon {
+        display: block;
+        float: left;
+        width: 68%;
+        padding: 10px 10px 10px ;
+    }
+    .envia{
+        margin: 0 auto;
+        text-align: center;
+        width: fit-content;
+        min-width: 100%;
+        align-items: center;
+    }
+}
