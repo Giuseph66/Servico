@@ -714,5 +714,5 @@ def busca_dados_contra(argumento):
             print(dados.text)
     else:
         print(f"Erro ao fazer a requisição: {dados.status_code}")
-        print(dados.text)
+        print(dados)
 
